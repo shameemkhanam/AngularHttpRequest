@@ -16,7 +16,8 @@
           <label>Product Price</label>
           <input type="text" name="price" ngModel>
 
-          <input type="submit" value="Add Product">
+          <!-- <input type="submit" value="Add Product"> -->
+          <input type="submit" value="{{editMode ? 'Update Product' : 'Add Product'}}">
         </form>
       </div>
       <!--Display product area-->
@@ -29,19 +30,27 @@
             <th>Description</th>
             <th>Price</th>
             <th></th>
+            <th></th>
           </tr>
-          <tr>
-            <td>1</td>
-            <td>iPhone</td>
-            <td>iPhone Pro 11</td>
-            <td>$1299</td>
-            <td><button class="btn-delete">Delete</button></td>
+          <tr *ngIf="allProducts.length < 1 && !isFetching ">
+            <td colspan="5">No products available!</td>
+          </tr>
+          <tr *ngIf="isFetching ">
+            <td colspan="5">Loading...</td>
+          </tr>
+          <tr *ngFor="let prod of allProducts; index as i">
+            <td>{{i + 1}}</td>
+            <td>{{prod.pName}}</td>
+            <td>{{prod.desc}}</td>
+            <td>${{prod.price}}</td>
+            <td><button class="btn-delete" (click)="onDeleteProduct(prod.id)">Delete</button></td>
+            <td><button class="btn-edit" (click)="onEditClicked(prod.id)">Edit</button></td>
           </tr>
         </table>
         <hr>
         <div class="action-btn-container">
-          <button class="btn-fetch">Fetch Product</button>
-          <button class="btn-clear">Clear Product</button>
+          <button class="btn-fetch" (click)="onProductsFetch()">Fetch Products</button>
+          <button class="btn-clear" (click)="onDeleteAllProduct()">Clear Products</button>
         </div>
       </div>
     </div>

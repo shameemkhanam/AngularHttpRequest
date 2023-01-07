@@ -46,7 +46,7 @@ input[type=text] {
   }
   
   input[type=submit] {
-    width: 30%;
+    width: 50%;
     background-color: #48C9B0;
     color: white;
     padding: 14px 20px;
@@ -86,6 +86,7 @@ input[type=text] {
     border: none;
     padding: 8px 15px;
     margin: 0px 5px;
+    width: 150px;
   }
 
   .btn-delete{
@@ -100,6 +101,11 @@ input[type=text] {
 
   .btn-clear{
     background-color: #F5B041;
+    color: white;
+  }
+
+  .btn-edit{
+    background-color: rgb(70, 187, 220);
     color: white;
   }
   
