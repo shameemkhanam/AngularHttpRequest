@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Product } from './model/products';
 import { ProductService } from './Service/products.service';
 
@@ -8,12 +9,14 @@ import { ProductService } from './Service/products.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'AngularHttpRequest';
   allProducts: Product[] = [];
   editMode: boolean = false;
   isFetching: boolean = false; //for loading... indicator
   currentProductId: string;
+  errorMsg: string = null;
+  errorSub: Subscription;
 
   @ViewChild('productsForm') form: NgForm;
 
@@ -21,6 +24,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.fetchProducts(); //becoz,whenever the pg loads v want to display all products in the db
+    this.errorSub = this.productService.error.subscribe((emessage) => {
+      this.errorMsg = emessage;
+    })
   }
 
   onProductsFetch() {
@@ -72,10 +78,15 @@ export class AppComponent implements OnInit {
     //   });
 
     this.isFetching = true;
-    this.productService.fetchProduct().subscribe((products) => {
-      this.allProducts = products;
-      this.isFetching = false;
-    });
+    this.productService.fetchProduct().subscribe(
+      (products) => {
+        this.allProducts = products;
+        this.isFetching = false;
+      },
+      (err) => {
+        this.errorMsg = err.message;
+      }
+    );      
   }
 
   onDeleteProduct(id: string) {
@@ -116,5 +127,9 @@ export class AppComponent implements OnInit {
 
     //change button value to update product
     this.editMode = true;
+  }
+
+  ngOnDestroy(): void {
+    this.errorSub.unsubscribe();
   }
 }
